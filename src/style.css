@@ -1,0 +1,715 @@
+/* ============================================================
+   Dark Sky Planner — Global Styles
+   ============================================================ */
+
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #1c2128;
+  --bg-panel: #21262d;
+  --border-color: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+  --accent-gold: #c8a96e;
+  --accent-cyan: #39c5cf;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --moon-color: #d4c5a0;
+
+  /* Twilight colors */
+  --color-day: #1a3a5c;
+  --color-civil: #0f2340;
+  --color-nautical: #091829;
+  --color-astronomical: #050e1a;
+  --color-night: #020710;
+
+  /* Quality colors */
+  --quality-excellent: #2d6a2d;
+  --quality-good: #7a7a00;
+  --quality-fair: #8a4400;
+  --quality-poor: #6a1010;
+  --quality-none: #2a2a2a;
+
+  --sidebar-width: 380px;
+  --header-height: 56px;
+  --radius: 8px;
+  --radius-sm: 4px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Map
+   ============================================================ */
+
+#map {
+  flex: 1;
+  height: 100%;
+  z-index: 1;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+
+#sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+#sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: var(--header-height);
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+}
+
+#header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-icon:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel);
+}
+
+#location-bar {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+
+#location-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+#location-name.has-location {
+  color: var(--text-primary);
+  font-style: normal;
+}
+
+#datepicker-container {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+#panels {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+#panels::-webkit-scrollbar {
+  width: 4px;
+}
+
+#panels::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Date Picker
+   ============================================================ */
+
+.datepicker-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.datepicker-wrap label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+#date-input {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+#date-input:focus {
+  border-color: var(--accent-gold);
+}
+
+.date-nav-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.date-nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel);
+}
+
+/* ============================================================
+   Panels
+   ============================================================ */
+
+.panel {
+  border-bottom: 1px solid var(--border-color);
+  padding: 14px 16px;
+}
+
+.panel-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.panel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.panel-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.panel-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ============================================================
+   Solar Panel
+   ============================================================ */
+
+#panel-solar {}
+
+/* ============================================================
+   Lunar Panel
+   ============================================================ */
+
+#panel-lunar {}
+
+.lunar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.moon-phase-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.lunar-summary {
+  flex: 1;
+}
+
+.phase-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.illumination {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   MW Panel
+   ============================================================ */
+
+.mw-window-block {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.mw-window-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+}
+
+.mw-window-time {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  font-variant-numeric: tabular-nums;
+}
+
+.mw-window-duration {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.quality-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quality-badge.excellent { background: var(--quality-excellent); color: #7dda7d; }
+.quality-badge.good { background: var(--quality-good); color: #e0e040; }
+.quality-badge.fair { background: var(--quality-fair); color: #f0a060; }
+.quality-badge.poor { background: var(--quality-poor); color: #e07070; }
+.quality-badge.none { background: var(--quality-none); color: var(--text-muted); }
+
+.mw-out-of-season {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ============================================================
+   Timeline
+   ============================================================ */
+
+#timeline-container {
+  padding: 12px 16px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.timeline-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.timeline-svg-wrap {
+  position: relative;
+}
+
+#timeline-svg {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.timeline-tooltip {
+  position: absolute;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--text-primary);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+  display: none;
+}
+
+.timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.timeline-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   Calendar Modal
+   ============================================================ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  width: min(520px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.btn-month {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.btn-month:hover {
+  color: var(--text-primary);
+  background: var(--bg-panel);
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.btn-close:hover {
+  color: var(--text-primary);
+}
+
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.cal-day-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 4px 0;
+  text-transform: uppercase;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: opacity 0.15s, transform 0.1s;
+  border: 1px solid transparent;
+}
+
+.cal-day:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+}
+
+.cal-day.active {
+  border-color: var(--accent-gold);
+}
+
+.cal-day.other-month {
+  opacity: 0.3;
+}
+
+.cal-day.computing {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.cal-day.excellent { background: var(--quality-excellent); color: #7dda7d; }
+.cal-day.good { background: var(--quality-good); color: #e0e040; }
+.cal-day.fair { background: var(--quality-fair); color: #f0a060; }
+.cal-day.poor { background: var(--quality-poor); color: #e07070; }
+.cal-day.none { background: var(--quality-none); color: var(--text-muted); }
+.cal-day.empty { background: transparent; cursor: default; }
+
+#calendar-legend {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cal-legend-item {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.cal-legend-item.excellent { background: var(--quality-excellent); color: #7dda7d; }
+.cal-legend-item.good { background: var(--quality-good); color: #e0e040; }
+.cal-legend-item.fair { background: var(--quality-fair); color: #f0a060; }
+.cal-legend-item.poor { background: var(--quality-poor); color: #e07070; }
+.cal-legend-item.none { background: var(--quality-none); color: var(--text-muted); }
+
+/* ============================================================
+   LP Legend + Controls
+   ============================================================ */
+
+#lp-legend {
+  position: fixed;
+  bottom: 24px;
+  left: 12px;
+  z-index: 900;
+  background: rgba(13, 17, 23, 0.88);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  backdrop-filter: blur(4px);
+}
+
+#lp-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 200px;
+  z-index: 900;
+  background: rgba(13, 17, 23, 0.88);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+#lp-controls label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#lp-opacity {
+  width: 100px;
+  cursor: pointer;
+  accent-color: var(--accent-gold);
+}
+
+/* ============================================================
+   Responsive — 768px breakpoint
+   ============================================================ */
+
+@media (max-width: 768px) {
+  #app {
+    flex-direction: column;
+  }
+
+  #map {
+    height: 55vh;
+    width: 100%;
+  }
+
+  #sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50vh;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    z-index: 500;
+  }
+
+  #lp-legend,
+  #lp-controls {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Utility
+   ============================================================ */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-panel) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: var(--radius-sm);
+  height: 14px;
+  margin-bottom: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.no-pin-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  gap: 12px;
+}
+
+.no-pin-message .pin-icon {
+  font-size: 36px;
+  opacity: 0.5;
+}
+
+.no-pin-message p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Leaflet dark overrides */
+.leaflet-control-zoom a {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--bg-panel) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(13,17,23,0.7) !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--text-secondary) !important;
+}

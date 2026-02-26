@@ -1,0 +1,160 @@
+import state from '../state.js';
+import { getSolarTimes, getDarknessWindow } from '../astro/solar.js';
+import { getLunarData } from '../astro/lunar.js';
+import { getMilkyWayData } from '../astro/milkyway.js';
+import { computeShootingWindow } from '../astro/windows.js';
+import { scoreNight } from '../astro/scoring.js';
+
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let calendarYear = null;
+let calendarMonth = null; // 0-indexed
+
+/**
+ * Initialize the calendar modal.
+ */
+export function initCalendar() {
+  const modal = document.getElementById('calendar-modal');
+  const btnOpen = document.getElementById('btn-calendar');
+  const btnClose = document.getElementById('btn-close-calendar');
+  const btnPrev = document.getElementById('btn-prev-month');
+  const btnNext = document.getElementById('btn-next-month');
+  const backdrop = modal?.querySelector('.modal-backdrop');
+
+  if (!modal) return;
+
+  btnOpen?.addEventListener('click', () => {
+    const [y, m] = state.date.split('-').map(Number);
+    calendarYear = y;
+    calendarMonth = m - 1;
+    openCalendar();
+  });
+
+  btnClose?.addEventListener('click', closeCalendar);
+  backdrop?.addEventListener('click', closeCalendar);
+
+  btnPrev?.addEventListener('click', () => {
+    calendarMonth--;
+    if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
+    renderCalendarGrid();
+  });
+
+  btnNext?.addEventListener('click', () => {
+    calendarMonth++;
+    if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+    renderCalendarGrid();
+  });
+
+  // Keyboard: Escape to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeCalendar();
+    }
+  });
+}
+
+function openCalendar() {
+  const modal = document.getElementById('calendar-modal');
+  modal?.classList.remove('hidden');
+  renderCalendarGrid();
+}
+
+function closeCalendar() {
+  const modal = document.getElementById('calendar-modal');
+  modal?.classList.add('hidden');
+}
+
+async function renderCalendarGrid() {
+  const title = document.getElementById('calendar-title');
+  const grid = document.getElementById('calendar-grid');
+  if (!grid || !title) return;
+
+  title.textContent = `${MONTHS[calendarMonth]} ${calendarYear}`;
+
+  // Day headers
+  const headerHtml = DAYS.map(d => `<div class="cal-day-header">${d}</div>`).join('');
+
+  // First day of month
+  const firstDay = new Date(calendarYear, calendarMonth, 1);
+  const startOffset = firstDay.getDay(); // 0=Sun
+
+  // Days in month
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+  // Previous month fill
+  const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate();
+
+  const cells = [];
+
+  // Empty cells for previous month
+  for (let i = startOffset - 1; i >= 0; i--) {
+    cells.push({ day: prevMonthDays - i, otherMonth: true, isoDate: null });
+  }
+
+  // This month's days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const m = String(calendarMonth + 1).padStart(2, '0');
+    const dd = String(d).padStart(2, '0');
+    cells.push({ day: d, otherMonth: false, isoDate: `${calendarYear}-${m}-${dd}` });
+  }
+
+  // Fill remaining cells
+  const remainder = (7 - (cells.length % 7)) % 7;
+  for (let d = 1; d <= remainder; d++) {
+    cells.push({ day: d, otherMonth: true, isoDate: null });
+  }
+
+  // Render skeleton first
+  grid.innerHTML = headerHtml + cells.map(cell => {
+    if (cell.otherMonth || !cell.isoDate) {
+      return `<div class="cal-day empty other-month">${cell.day}</div>`;
+    }
+    const isActive = cell.isoDate === state.date;
+    return `<div class="cal-day computing ${isActive ? 'active' : ''}" data-date="${cell.isoDate}">${cell.day}</div>`;
+  }).join('');
+
+  // No location — can't score
+  if (!state.location) return;
+
+  // Compute scores for each day (can run quickly since all client-side)
+  const { lat, lng } = state.location;
+
+  for (const cell of cells) {
+    if (cell.otherMonth || !cell.isoDate) continue;
+
+    // Small async yield to keep UI responsive
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const quality = computeDayQuality(cell.isoDate, lat, lng);
+
+    const cellEl = grid.querySelector(`[data-date="${cell.isoDate}"]`);
+    if (cellEl) {
+      const isActive = cell.isoDate === state.date;
+      cellEl.className = `cal-day ${quality} ${isActive ? 'active' : ''}`;
+      cellEl.dataset.date = cell.isoDate;
+
+      cellEl.addEventListener('click', () => {
+        state.date = cell.isoDate;
+        state.emit('uiSync'); // sync datepicker input
+        state.emit('dateChange', cell.isoDate);
+        closeCalendar();
+      });
+    }
+  }
+}
+
+function computeDayQuality(isoDate, lat, lng) {
+  try {
+    const solar = getSolarTimes(isoDate, lat, lng);
+    const darkness = getDarknessWindow(solar);
+    const lunar = getLunarData(isoDate, lat, lng);
+    const mw = getMilkyWayData(darkness, lat, lng);
+    const sw = computeShootingWindow(darkness, lunar.moonDownWindow, mw.window);
+
+    const nightData = { solar, darknessWindow: darkness, lunar, milkyway: mw, shootingWindow: sw };
+    return scoreNight(nightData);
+  } catch {
+    return 'none';
+  }
+}
