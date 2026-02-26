@@ -66,6 +66,39 @@ html, body {
   flex: 1;
   height: 100%;
   z-index: 1;
+  position: relative;
+}
+
+/* Map hint overlay — centered pill shown before first pin */
+#map-hint-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 800;
+  pointer-events: none;
+}
+
+#map-hint-pill {
+  background: rgba(13, 17, 23, 0.88);
+  border: 1px solid var(--accent-gold);
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 13px;
+  color: var(--accent-gold);
+  white-space: nowrap;
+  animation: pill-pulse 2.4s ease-in-out infinite;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pill-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Crosshair cursor before first pin */
+.map-awaiting-pin {
+  cursor: crosshair !important;
 }
 
 /* ============================================================
@@ -125,6 +158,17 @@ html, body {
 .btn-icon:hover {
   color: var(--text-primary);
   background: var(--bg-panel);
+}
+
+.btn-icon.btn-labeled {
+  width: auto;
+  padding: 0 10px;
+  gap: 5px;
+}
+
+.btn-label {
+  font-size: 11px;
+  font-weight: 500;
 }
 
 #location-bar {
@@ -222,6 +266,13 @@ html, body {
 .date-nav-btn:hover {
   color: var(--text-primary);
   background: var(--bg-panel);
+}
+
+.datepicker-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 4px;
 }
 
 /* ============================================================
@@ -420,6 +471,34 @@ html, body {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* Timeline color legend */
+.timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+}
+
+.tl-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.tl-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.tl-shooting { background: #39c5cf; }
+.tl-mw       { background: #f59e0b; }
+.tl-moon     { background: rgba(212, 197, 160, 0.7); }
+.tl-dark     { background: #020710; border: 1px solid var(--border-color); }
 
 /* ============================================================
    Calendar Modal
@@ -676,11 +755,10 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
+  padding: 32px 20px;
   text-align: center;
   color: var(--text-muted);
-  gap: 12px;
+  gap: 10px;
 }
 
 .no-pin-message .pin-icon {
@@ -691,6 +769,25 @@ html, body {
 .no-pin-message p {
   font-size: 13px;
   line-height: 1.6;
+}
+
+.no-pin-features {
+  list-style: none;
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin-top: 4px;
+}
+
+.no-pin-tip {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 5px 12px;
+  margin-top: 4px;
 }
 
 /* Leaflet dark overrides */

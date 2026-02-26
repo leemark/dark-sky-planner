@@ -169,6 +169,15 @@ export function renderTimeline() {
     </div>
   `;
 
+  const legendHtml = `
+    <div class="timeline-legend">
+      <span class="tl-item"><span class="tl-swatch tl-shooting"></span>Shooting window</span>
+      <span class="tl-item"><span class="tl-swatch tl-mw"></span>MW visible</span>
+      <span class="tl-item"><span class="tl-swatch tl-moon"></span>Moon up</span>
+      <span class="tl-item"><span class="tl-swatch tl-dark"></span>Dark sky</span>
+    </div>
+  `;
+
   el.innerHTML = `
     <div class="timeline-title">Night Timeline</div>
     <div class="timeline-svg-wrap">
@@ -176,6 +185,7 @@ export function renderTimeline() {
       ${tooltipHtml}
     </div>
     ${labelsHtml}
+    ${legendHtml}
   `;
 
   // Wire tooltip

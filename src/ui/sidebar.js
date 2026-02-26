@@ -48,7 +48,14 @@ function renderNoPinMessage() {
       msg.className = 'no-pin-message';
       msg.innerHTML = `
         <div class="pin-icon">🔭</div>
-        <p>Click anywhere on the map to pin a location and view astrophotography conditions for that night.</p>
+        <p>Click anywhere on the map to pin a location and see astrophotography conditions.</p>
+        <ul class="no-pin-features">
+          <li>🌙 Moon phase &amp; rise/set times</li>
+          <li>🌌 Galactic Center visibility window</li>
+          <li>🌅 Sunset, astronomical dusk &amp; dawn</li>
+          <li>📅 Monthly quality calendar</li>
+        </ul>
+        <div class="no-pin-tip">Tip: use ← → arrow keys to navigate dates</div>
       `;
       panels.appendChild(msg);
     }

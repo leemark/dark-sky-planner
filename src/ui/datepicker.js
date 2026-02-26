@@ -17,6 +17,7 @@ export function initDatepicker(onDateChange) {
       <input type="date" id="date-input" value="${state.date}" />
       <button class="date-nav-btn" id="date-next" title="Next day">&#8594;</button>
     </div>
+    <div class="datepicker-hint">&#8592; &#8594; arrow keys to change date</div>
   `;
 
   const input = document.getElementById('date-input');

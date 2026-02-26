@@ -36,6 +36,9 @@ export function initPin(map, onPin) {
  * Place (or move) the marker to the given position.
  */
 export function placePin(map, lat, lng) {
+  // Remove the pre-pin crosshair affordance on first pin
+  map.getContainer().classList.remove('map-awaiting-pin');
+
   if (currentMarker) {
     currentMarker.setLatLng([lat, lng]);
   } else {

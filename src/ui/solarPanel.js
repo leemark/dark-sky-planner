@@ -17,7 +17,14 @@ export function renderSolarPanel() {
   const tz = state.timezone;
 
   if (!nd || !nd.solar) {
-    el.innerHTML = `<div class="panel"><div class="panel-title">Sun</div><div class="panel-empty">Computing…</div></div>`;
+    el.innerHTML = `
+      <div class="panel">
+        <div class="panel-title">Sun</div>
+        <div class="skeleton" style="width:70%"></div>
+        <div class="skeleton" style="width:55%"></div>
+        <div class="skeleton" style="width:65%"></div>
+        <div class="skeleton" style="width:50%"></div>
+      </div>`;
     return;
   }
 

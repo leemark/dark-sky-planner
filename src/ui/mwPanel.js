@@ -25,7 +25,13 @@ export function renderMWPanel() {
   const tz = state.timezone;
 
   if (!nd) {
-    el.innerHTML = `<div class="panel"><div class="panel-title">Milky Way</div><div class="panel-empty">Computing…</div></div>`;
+    el.innerHTML = `
+      <div class="panel">
+        <div class="panel-title">Milky Way</div>
+        <div class="skeleton" style="width:65%"></div>
+        <div class="skeleton" style="width:45%"></div>
+        <div class="skeleton" style="width:55%"></div>
+      </div>`;
     return;
   }
 
@@ -33,8 +39,16 @@ export function renderMWPanel() {
   const mw = nd.milkyway;
   const sw = nd.shootingWindow;
 
+  const qualityTips = {
+    excellent: '3+ hrs shooting window, moon <25%',
+    good:      '2+ hrs shooting window, moon <50%',
+    fair:      '1+ hr shooting window',
+    poor:      'Shooting window under 1 hr',
+    none:      'No shooting window tonight',
+  };
+
   // Build quality badge HTML
-  const badgeHtml = `<span class="quality-badge ${quality}">${quality.charAt(0).toUpperCase() + quality.slice(1)}</span>`;
+  const badgeHtml = `<span class="quality-badge ${quality}" title="${qualityTips[quality] || ''}">${quality.charAt(0).toUpperCase() + quality.slice(1)}</span>`;
 
   // Out of season check (Nov–Jan for Northern hemisphere)
   if (isOutOfSeason(state.date) && (!mw || mw.neverVisible)) {
@@ -62,15 +76,15 @@ export function renderMWPanel() {
         </div>
         ${mw && mw.peakAlt !== null ? `
         <div class="panel-row" style="margin-top:8px">
-          <span class="panel-label">GC Peak Altitude</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Altitude</span>
           <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
         </div>
         <div class="panel-row">
-          <span class="panel-label">GC Peak Azimuth</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Azimuth</span>
           <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
         </div>
         <div class="panel-row">
-          <span class="panel-label">GC Peak Time</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Peak Time</span>
           <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
         </div>
         ` : ''}
@@ -89,15 +103,15 @@ export function renderMWPanel() {
       </div>
       ${mw && mw.peakAlt !== null ? `
       <div class="panel-row">
-        <span class="panel-label">GC Peak Altitude</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Altitude</span>
         <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label">GC Peak Azimuth</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Azimuth</span>
         <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label">GC Peak Time</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Peak Time</span>
         <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
       </div>
       ` : ''}

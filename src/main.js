@@ -79,6 +79,7 @@ async function boot() {
 
   // Wire pin behavior
   initPin(map, async ({ lat, lng }) => {
+    document.getElementById('map-hint-overlay')?.remove();
     state.location = { lat, lng, name: null };
     state.timezone = tzlookup(lat, lng);
     recompute();

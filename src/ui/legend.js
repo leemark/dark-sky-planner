@@ -21,6 +21,7 @@ export function renderLegend() {
     <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">
       Bortle Scale
     </div>
+    <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;">Light Pollution Atlas 2022 (VIIRS)</div>
     <div style="display:flex;flex-direction:column;gap:2px;">
       ${bortleScale.map(b => `
         <div style="display:flex;align-items:center;gap:6px;">

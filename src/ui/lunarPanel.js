@@ -17,7 +17,13 @@ export function renderLunarPanel() {
   const tz = state.timezone;
 
   if (!nd || !nd.lunar) {
-    el.innerHTML = `<div class="panel"><div class="panel-title">Moon</div><div class="panel-empty">Computing…</div></div>`;
+    el.innerHTML = `
+      <div class="panel">
+        <div class="panel-title">Moon</div>
+        <div class="skeleton" style="width:60%"></div>
+        <div class="skeleton" style="width:40%"></div>
+        <div class="skeleton" style="width:50%"></div>
+      </div>`;
     return;
   }
 
@@ -34,10 +40,10 @@ export function renderLunarPanel() {
           <div class="illumination">${illumPct}% illuminated</div>
         </div>
         ${l.isNoInterference
-          ? `<span class="quality-badge excellent" title="Moon won't interfere">Dark</span>`
+          ? `<span class="quality-badge excellent" title="Moon sets before darkness — won't interfere with shooting">Dark</span>`
           : illumPct > 50
-            ? `<span class="quality-badge poor" title="Bright moon">Bright</span>`
-            : `<span class="quality-badge fair" title="Partial moon">Partial</span>`
+            ? `<span class="quality-badge poor" title="Bright moon (${illumPct}% illuminated) — significantly reduces sky darkness">Bright</span>`
+            : `<span class="quality-badge fair" title="Partially illuminated moon — some interference with sky darkness">Partial</span>`
         }
       </div>
       <div class="panel-row">

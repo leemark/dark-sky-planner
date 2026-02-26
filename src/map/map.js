@@ -25,12 +25,15 @@ export function initMap() {
     maxZoom: 20,
   }).addTo(mapInstance);
 
-  // Light Pollution overlay
-  lpLayer = L.tileLayer('https://map1.lightpollutionmap.info/tiles/lp/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.lightpollutionmap.info">lightpollutionmap.info</a>',
+  // Light Pollution overlay (djlorenz World Atlas 2022, VIIRS satellite data)
+  lpLayer = L.tileLayer('https://djlorenz.github.io/astronomy/lp2022/overlay/tiles/{z}/{x}/{y}.png', {
+    attribution: '&copy; Light Pollution Atlas 2022 (Fabio Falchi / djlorenz, VIIRS)',
     opacity: 0.7,
-    maxZoom: 11,
+    maxZoom: 10,
   }).addTo(mapInstance);
+
+  // Add crosshair cursor hint until user places first pin
+  mapInstance.getContainer().classList.add('map-awaiting-pin');
 
   // Opacity slider wiring
   const slider = document.getElementById('lp-opacity');
