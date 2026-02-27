@@ -29,7 +29,7 @@ export function renderTimeline() {
 
   // Timeline spans sunset → next sunrise
   const tStart = s.sunset?.getTime?.() || 0;
-  const tEnd = s.sunrise?.getTime?.() || 0;
+  const tEnd = s.nextSunrise?.getTime?.() || 0;
 
   if (!tStart || !tEnd || tEnd <= tStart) {
     el.innerHTML = '';
@@ -165,7 +165,7 @@ export function renderTimeline() {
     <div class="timeline-labels">
       <span class="timeline-label">${formatTime(s.sunset, tz)}</span>
       <span class="timeline-label">${formatTime(s.nadir, tz)}</span>
-      <span class="timeline-label">${formatTime(s.sunrise, tz)}</span>
+      <span class="timeline-label">${formatTime(s.nextSunrise, tz)}</span>
     </div>
   `;
 

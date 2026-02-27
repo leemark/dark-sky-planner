@@ -24,6 +24,7 @@ export function getSolarTimes(isoDate, lat, lng) {
 
   return {
     sunrise: times.sunrise,
+    nextSunrise: nextTimes.sunrise,
     sunset: times.sunset,
     civilDusk: times.dusk,                      // civil (6°)
     nauticalDusk: times.nauticalDusk,
