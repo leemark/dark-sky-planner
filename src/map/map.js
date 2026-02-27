@@ -25,11 +25,14 @@ export function initMap() {
     maxZoom: 20,
   }).addTo(mapInstance);
 
-  // Light Pollution overlay (djlorenz World Atlas 2022, VIIRS satellite data)
-  lpLayer = L.tileLayer('https://djlorenz.github.io/astronomy/lp2022/overlay/tiles/{z}/{x}/{y}.png', {
-    attribution: '&copy; Light Pollution Atlas 2022 (Fabio Falchi / djlorenz, VIIRS)',
+  // Light Pollution overlay — self-hosted VIIRS 2024 tiles (z0–6)
+  // Served from leemark/dark-sky-planner-tiles on GitHub Pages
+  // maxNativeZoom:6 = Leaflet scales z6 tiles for higher zoom levels (native data res ~2.4km/px)
+  lpLayer = L.tileLayer('https://leemark.github.io/dark-sky-planner-tiles/{z}/{x}/{y}.png', {
+    attribution: '&copy; Light Pollution Atlas 2024 (VIIRS/NASA)',
     opacity: 0.7,
-    maxZoom: 10,
+    maxZoom: 20,
+    maxNativeZoom: 6,
   }).addTo(mapInstance);
 
   // Add crosshair cursor hint until user places first pin

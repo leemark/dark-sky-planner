@@ -27,3 +27,9 @@ Thumbs.db
 
 # Claude Code session data
 .claude/
+
+# Light pollution tiles — hosted separately in leemark/dark-sky-planner-tiles
+public/lp-tiles/
+
+data/viirs_2024.tif
+data/viirs_2024.zip
