@@ -971,3 +971,66 @@ html, body {
 }
 .search-loading:hover,
 .search-no-results:hover { background: none !important; }
+
+/* ============================================================
+   Help modal
+   ============================================================ */
+.help-modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.help-section {
+  margin: 0 0 20px;
+}
+.help-section h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+.help-section p,
+.help-section ul,
+.help-section ol {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+.help-section ul,
+.help-section ol {
+  padding-left: 18px;
+}
+.help-section li {
+  margin-bottom: 4px;
+}
+
+.help-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.help-table td {
+  padding: 4px 8px;
+  vertical-align: top;
+  color: var(--text-secondary);
+}
+.help-table td:first-child {
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
+.help-caveat {
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--accent-amber);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  line-height: 1.8;
+}

@@ -10,6 +10,7 @@ import { computeShootingWindow } from './astro/windows.js';
 import { initDatepicker } from './ui/datepicker.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initCalendar } from './ui/calendar.js';
+import { initHelp } from './ui/help.js';
 import { initSearch } from './ui/search.js';
 import { renderLegend } from './ui/legend.js';
 import { encodeState, decodeState } from './utils/url.js';
@@ -79,6 +80,7 @@ async function boot() {
 
   initSidebar();
   initCalendar();
+  initHelp();
   renderLegend();
 
   // Shared callback for both map-click pins and search results

@@ -20,6 +20,7 @@
         <div id="header-actions">
           <button id="btn-calendar" class="btn-icon btn-labeled" title="View Calendar"><span>&#128197;</span><span class="btn-label">Calendar</span></button>
           <button id="btn-share" class="btn-icon btn-labeled" title="Copy Share Link"><span>&#128279;</span><span class="btn-label">Share</span></button>
+          <button id="btn-help" class="btn-icon btn-labeled" title="About &amp; Help"><span>?</span><span class="btn-label">Help</span></button>
         </div>
         <button id="btn-sidebar-toggle" class="btn-icon" title="Hide panel" aria-label="Toggle panel">&#9660;</button>
       </div>
@@ -79,6 +80,80 @@
   <div id="lp-controls">
     <label for="lp-opacity">Light Pollution</label>
     <input type="range" id="lp-opacity" min="0" max="100" value="20" />
+  </div>
+
+  <!-- Help modal -->
+  <div id="help-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content help-modal-content">
+      <div class="modal-header">
+        <h2>About &amp; Help</h2>
+        <button id="btn-help-close" class="btn-close">&#10005;</button>
+      </div>
+
+      <div class="help-section">
+        <h3>What Is This?</h3>
+        <p>Dark Sky Planner helps photographers plan nighttime shoots of the Milky Way by showing when darkness, a moonless sky, and the galactic core align at any location on a chosen date.</p>
+      </div>
+
+      <div class="help-section">
+        <h3>Quick Start</h3>
+        <ol>
+          <li>Click or tap anywhere on the map to drop a location pin</li>
+          <li>Use the date picker to choose your target night</li>
+          <li>Read the panels — solar times, moon status, Milky Way window</li>
+          <li>Check the quality badge for an at-a-glance summary</li>
+          <li>Use the Calendar (&#128197;) button to scan across an entire month</li>
+        </ol>
+      </div>
+
+      <div class="help-section">
+        <h3>Understanding the Results</h3>
+        <p><strong>Quality ratings:</strong></p>
+        <table class="help-table">
+          <tr><td class="cal-legend-item excellent">Excellent</td><td>Long dark &amp; moonless window, galactic core well above horizon</td></tr>
+          <tr><td class="cal-legend-item good">Good</td><td>Solid window with minimal moon interference</td></tr>
+          <tr><td class="cal-legend-item fair">Fair</td><td>Shorter window or partial moon influence</td></tr>
+          <tr><td class="cal-legend-item poor">Poor</td><td>Very short usable window or significant moonlight</td></tr>
+          <tr><td class="cal-legend-item none">No Window</td><td>No viable window (full moon, or location/season has no true darkness)</td></tr>
+        </table>
+        <p><strong>The Night Timeline:</strong> Visual bar showing twilight phases (civil &rarr; nautical &rarr; astronomical &rarr; night), moon presence, and the Milky Way shooting window in cyan. Hover or tap any segment for exact times.</p>
+        <p><strong>The Shooting Window:</strong> The intersection of three conditions: astronomical darkness + moon below horizon + galactic center &ge;15&deg; altitude. All three must overlap.</p>
+      </div>
+
+      <div class="help-section">
+        <h3>About the Data &amp; Confidence</h3>
+        <p><strong>High confidence:</strong></p>
+        <ul>
+          <li>Solar/twilight times use Jean Meeus' Astronomical Algorithms (via SunCalc) — accurate within ~1–2 minutes of official USNO values</li>
+          <li>Galactic center altitude/azimuth uses astronomy-engine (VSOP87-grade precision, arcsecond accuracy)</li>
+          <li>Moon illumination and phase are reliable for planning purposes</li>
+          <li>Timezone detection uses an embedded database — no network call needed</li>
+        </ul>
+        <p><strong>Useful heuristics (not physical laws):</strong></p>
+        <ul>
+          <li>The 15&deg; minimum altitude for Milky Way "visibility" is a rule of thumb. Near the horizon, atmospheric haze often obscures the core even when the math says it's up.</li>
+          <li>Quality score thresholds (what makes a night "Good" vs "Fair") are reasonable defaults, not universal standards.</li>
+        </ul>
+        <div class="help-caveat">
+          <strong>What this app does NOT model:</strong><br>
+          &#9729;&#65039; Weather — clear skies are assumed<br>
+          &#9968; Local horizon — mountains, trees, or buildings blocking your view<br>
+          &#127750; Light pollution variation — the overlay is VIIRS/NASA 2024 data at ~2.4 km resolution and won't reflect new developments or seasonal changes<br>
+          &#127787;&#65039; Atmospheric transparency or seeing conditions
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>Data Sources</h3>
+        <ul>
+          <li>All astronomical calculations run locally in your browser — no data leaves your device</li>
+          <li>Map tiles: CartoDB, OpenStreetMap, Esri (loaded on demand as you pan/zoom)</li>
+          <li>Light pollution overlay: VIIRS/NASA Light Pollution Atlas 2024</li>
+          <li>Location search (optional): OpenStreetMap Nominatim geocoding API</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/main.js"></script>
