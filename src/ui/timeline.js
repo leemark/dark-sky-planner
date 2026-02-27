@@ -199,10 +199,11 @@ export function renderTimeline() {
       const timeStr = formatTime(hoveredTime, tz);
       const conditions = getConditionsAt(hoveredTime, nd);
 
-      tip.style.display = 'block';
-      tip.style.left = `${e.clientX - rect.left}px`;
-      tip.style.top = `${BAND_Y - 28}px`;
       tip.textContent = `${timeStr} · ${conditions}`;
+      tip.style.display = 'block';
+      const rawLeft = e.clientX - rect.left;
+      tip.style.left = `${Math.min(rawLeft, rect.width - tip.offsetWidth - 2)}px`;
+      tip.style.top = `${BAND_Y - 28}px`;
     });
 
     svgEl.addEventListener('mouseleave', () => {
@@ -215,10 +216,11 @@ export function renderTimeline() {
       const rect = svgEl.getBoundingClientRect();
       const px = ((touch.clientX - rect.left) / rect.width) * SVG_W;
       const hoveredTime = toTime(px);
-      tip.style.display = 'block';
-      tip.style.left = `${touch.clientX - rect.left}px`;
-      tip.style.top = `${BAND_Y - 28}px`;
       tip.textContent = `${formatTime(hoveredTime, tz)} · ${getConditionsAt(hoveredTime, nd)}`;
+      tip.style.display = 'block';
+      const rawLeft = touch.clientX - rect.left;
+      tip.style.left = `${Math.min(rawLeft, rect.width - tip.offsetWidth - 2)}px`;
+      tip.style.top = `${BAND_Y - 28}px`;
     }, { passive: false });
 
     svgEl.addEventListener('touchend', () => {
