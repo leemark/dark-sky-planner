@@ -823,3 +823,6 @@ html, body {
 .leaflet-control-layers label {
   color: var(--text-primary);
 }
+.leaflet-control-layers-toggle {
+  background-color: var(--bg-secondary) !important;
+}
