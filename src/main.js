@@ -10,6 +10,7 @@ import { computeShootingWindow } from './astro/windows.js';
 import { initDatepicker } from './ui/datepicker.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initCalendar } from './ui/calendar.js';
+import { initSearch } from './ui/search.js';
 import { renderLegend } from './ui/legend.js';
 import { encodeState, decodeState } from './utils/url.js';
 import tzlookup from 'tz-lookup';
@@ -77,8 +78,8 @@ async function boot() {
   initCalendar();
   renderLegend();
 
-  // Wire pin behavior
-  initPin(map, async ({ lat, lng }) => {
+  // Shared callback for both map-click pins and search results
+  async function onPinPlaced({ lat, lng }) {
     document.getElementById('map-hint-overlay')?.remove();
     state.location = { lat, lng, name: null };
     state.timezone = tzlookup(lat, lng);
@@ -89,7 +90,10 @@ async function boot() {
     const name = await reverseGeocode(lat, lng);
     state.location = { lat, lng, name };
     state.emit('change');
-  });
+  }
+
+  initPin(map, onPinPlaced);
+  initSearch(map, onPinPlaced);
 
   // Share button
   const btnShare = document.getElementById('btn-share');

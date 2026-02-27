@@ -1,6 +1,19 @@
 let debounceTimer = null;
 
 /**
+ * Forward geocode a place name query using Nominatim.
+ * Returns up to 5 results with { lat, lon, display_name }.
+ */
+export async function forwardGeocode(query) {
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5`;
+  const res = await fetch(url, {
+    headers: { 'Accept-Language': 'en', 'User-Agent': 'DarkSkyPlanner/1.0' },
+  });
+  if (!res.ok) throw new Error('Nominatim error');
+  return res.json();
+}
+
+/**
  * Reverse geocode a lat/lng to a place name using Nominatim.
  * Debounced to avoid rapid consecutive requests.
  *
