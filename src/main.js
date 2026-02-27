@@ -120,6 +120,7 @@ async function boot() {
   const urlState = decodeState();
   if (urlState) {
     const { lat, lng, date } = urlState;
+    document.getElementById('map-hint-overlay')?.remove();
     state.date = date;
     state.timezone = tzlookup(lat, lng);
     state.location = { lat, lng, name: null };
