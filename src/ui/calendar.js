@@ -120,6 +120,9 @@ async function renderCalendarGrid() {
   // Compute scores for each day (can run quickly since all client-side)
   const { lat, lng } = state.location;
 
+  const scorableCells = cells.filter(c => !c.otherMonth && c.isoDate);
+  let scored = 0;
+
   for (const cell of cells) {
     if (cell.otherMonth || !cell.isoDate) continue;
 
@@ -127,6 +130,14 @@ async function renderCalendarGrid() {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     const quality = computeDayQuality(cell.isoDate, lat, lng);
+    scored++;
+
+    // Show progress in title until all cells are scored
+    if (title && scored < scorableCells.length) {
+      title.textContent = `${MONTHS[calendarMonth]} ${calendarYear} · ${scored}/${scorableCells.length}`;
+    } else if (title) {
+      title.textContent = `${MONTHS[calendarMonth]} ${calendarYear}`;
+    }
 
     const cellEl = grid.querySelector(`[data-date="${cell.isoDate}"]`);
     if (cellEl) {

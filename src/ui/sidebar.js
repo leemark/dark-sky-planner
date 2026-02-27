@@ -1,4 +1,6 @@
 import state from '../state.js';
+import { scoreNight } from '../astro/scoring.js';
+import { getTimezoneAbbr } from '../utils/time.js';
 import { renderSolarPanel } from './solarPanel.js';
 import { renderLunarPanel } from './lunarPanel.js';
 import { renderMWPanel } from './mwPanel.js';
@@ -26,6 +28,7 @@ function initMobileToggle() {
 
 function renderAll() {
   updateLocationBar();
+  renderErrorBanner();
   renderSolarPanel();
   renderLunarPanel();
   renderMWPanel();
@@ -35,17 +38,48 @@ function renderAll() {
 
 function updateLocationBar() {
   const el = document.getElementById('location-name');
-  if (!el) return;
+  const bar = document.getElementById('location-bar');
+  if (!el || !bar) return;
 
-  if (state.location?.name) {
-    el.textContent = `📍 ${state.location.name}`;
+  // Remove existing TZ line (re-inserted below if location set)
+  bar.querySelector('.location-tz')?.remove();
+
+  if (state.location) {
+    const locText = state.location.name
+      ? `📍 ${state.location.name}`
+      : `📍 ${state.location.lat.toFixed(4)}°, ${state.location.lng.toFixed(4)}°`;
+
+    if (state.nightData) {
+      const quality = scoreNight(state.nightData);
+      const label = quality.charAt(0).toUpperCase() + quality.slice(1);
+      el.innerHTML = `${locText} <span class="quality-badge ${quality}">${label}</span>`;
+    } else {
+      el.textContent = locText;
+    }
     el.classList.add('has-location');
-  } else if (state.location) {
-    el.textContent = `📍 ${state.location.lat.toFixed(4)}°, ${state.location.lng.toFixed(4)}°`;
-    el.classList.add('has-location');
+
+    const tzDiv = document.createElement('div');
+    tzDiv.className = 'location-tz';
+    tzDiv.textContent = `All times in ${getTimezoneAbbr(state.timezone)}`;
+    bar.appendChild(tzDiv);
   } else {
-    el.textContent = 'Click map to pin a location';
+    el.textContent = 'Search or tap map to pin a location';
     el.classList.remove('has-location');
+  }
+}
+
+function renderErrorBanner() {
+  const panels = document.getElementById('panels');
+  const existing = panels?.querySelector('.compute-error-banner');
+  if (state.computeError) {
+    if (!existing) {
+      const banner = document.createElement('div');
+      banner.className = 'compute-error-banner';
+      banner.textContent = 'Could not calculate conditions for this location or date.';
+      panels.prepend(banner);
+    }
+  } else {
+    existing?.remove();
   }
 }
 

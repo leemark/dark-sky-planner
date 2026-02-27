@@ -11,6 +11,7 @@ const state = {
   date: todayISO(),   // ISO date string YYYY-MM-DD
   timezone: 'UTC',    // IANA timezone string from tz-lookup
   nightData: null,    // computed NightCalculation object or null
+  computeError: false, // true when recompute() throws
 
   on(event, cb) {
     if (!listeners[event]) listeners[event] = [];

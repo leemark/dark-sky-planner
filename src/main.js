@@ -23,6 +23,8 @@ import tzlookup from 'tz-lookup';
 function recompute() {
   if (!state.location) return;
 
+  state.computeError = false;
+
   const { lat, lng } = state.location;
   const date = state.date;
 
@@ -43,6 +45,7 @@ function recompute() {
   } catch (err) {
     console.error('recompute error:', err);
     state.nightData = null;
+    state.computeError = true;
   }
 
   // Emit 'change' ONCE — this triggers all UI panels to re-render.
@@ -99,9 +102,11 @@ async function boot() {
   const btnShare = document.getElementById('btn-share');
   btnShare?.addEventListener('click', () => {
     navigator.clipboard.writeText(window.location.href).then(() => {
-      btnShare.title = 'Copied!';
+      const label = btnShare.querySelector('.btn-label');
+      if (label) label.textContent = 'Copied!';
       btnShare.style.color = '#39c5cf';
       setTimeout(() => {
+        if (label) label.textContent = 'Share';
         btnShare.title = 'Copy Share Link';
         btnShare.style.color = '';
       }, 2000);

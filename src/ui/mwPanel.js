@@ -76,15 +76,15 @@ export function renderMWPanel() {
         </div>
         ${mw && mw.peakAlt !== null ? `
         <div class="panel-row" style="margin-top:8px">
-          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Altitude</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Altitude</span>
           <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
         </div>
         <div class="panel-row">
-          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Azimuth</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Azimuth</span>
           <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
         </div>
         <div class="panel-row">
-          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Peak Time</span>
+          <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Time</span>
           <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
         </div>
         ` : ''}
@@ -103,15 +103,15 @@ export function renderMWPanel() {
       </div>
       ${mw && mw.peakAlt !== null ? `
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Altitude</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Altitude</span>
         <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Azimuth</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Azimuth</span>
         <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">GC Peak Time</span>
+        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Time</span>
         <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
       </div>
       ` : ''}

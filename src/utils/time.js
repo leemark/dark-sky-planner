@@ -49,6 +49,15 @@ export function parseISODate(isoString) {
 }
 
 /**
+ * Get the short timezone abbreviation for an IANA timezone string (e.g. "MDT", "JST").
+ */
+export function getTimezoneAbbr(timezone) {
+  return new Intl.DateTimeFormat('en-US', { timeZone: timezone, timeZoneName: 'short' })
+    .formatToParts(new Date())
+    .find(p => p.type === 'timeZoneName')?.value ?? timezone;
+}
+
+/**
  * Get today's date as ISO string YYYY-MM-DD
  */
 export function todayISO() {
