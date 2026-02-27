@@ -33,6 +33,7 @@ export function initMap() {
     opacity: 0.7,
     maxZoom: 20,
     maxNativeZoom: 6,
+    tms: true,
   }).addTo(mapInstance);
 
   // Add crosshair cursor hint until user places first pin
