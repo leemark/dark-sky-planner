@@ -18,12 +18,27 @@ export function initMap() {
     zoomControl: true,
   });
 
-  // CartoDB Dark Matter base layer
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 20,
-  }).addTo(mapInstance);
+  // Base layers
+  const cartoAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  const esriAttr  = 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community';
+  const osmAttr   = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+  const darkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { attribution: cartoAttr, subdomains: 'abcd', maxZoom: 20 });
+
+  const voyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    { attribution: cartoAttr, subdomains: 'abcd', maxZoom: 20 });
+
+  const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: osmAttr, maxZoom: 19 });
+
+  const esriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    { attribution: esriAttr, maxZoom: 19 });
+
+  const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    { attribution: esriAttr, maxZoom: 19 });
+
+  darkMatter.addTo(mapInstance);
 
   // Light Pollution overlay — self-hosted VIIRS 2024 tiles (z0–6)
   // Served from leemark/dark-sky-planner-tiles on GitHub Pages
@@ -35,6 +50,17 @@ export function initMap() {
     maxNativeZoom: 6,
     tms: true,
   }).addTo(mapInstance);
+
+  // Layer control
+  const baseLayers = {
+    'Dark Matter': darkMatter,
+    'Voyager': voyager,
+    'OpenStreetMap': osm,
+    'World Topo': esriTopo,
+    'World Streets': esriStreet,
+  };
+  const overlays = { 'Light Pollution': lpLayer };
+  L.control.layers(baseLayers, overlays, { collapsed: true }).addTo(mapInstance);
 
   // Add crosshair cursor hint until user places first pin
   mapInstance.getContainer().classList.add('map-awaiting-pin');

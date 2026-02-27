@@ -810,3 +810,16 @@ html, body {
 .leaflet-control-attribution a {
   color: var(--text-secondary) !important;
 }
+
+.leaflet-control-layers {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px;
+  color: var(--text-primary);
+}
+.leaflet-control-layers-separator {
+  border-top-color: var(--border-color);
+}
+.leaflet-control-layers label {
+  color: var(--text-primary);
+}
