@@ -10,6 +10,18 @@ import { renderTimeline } from './timeline.js';
 export function initSidebar() {
   renderAll();
   state.on('change', renderAll);
+  initMobileToggle();
+}
+
+function initMobileToggle() {
+  const btn = document.getElementById('btn-sidebar-toggle');
+  const sidebar = document.getElementById('sidebar');
+  if (!btn || !sidebar) return;
+  btn.addEventListener('click', () => {
+    const collapsed = sidebar.classList.toggle('sidebar-collapsed');
+    btn.textContent = collapsed ? '▲' : '▼';
+    btn.title = collapsed ? 'Show panel' : 'Hide panel';
+  });
 }
 
 function renderAll() {
@@ -48,7 +60,7 @@ function renderNoPinMessage() {
       msg.className = 'no-pin-message';
       msg.innerHTML = `
         <div class="pin-icon">🔭</div>
-        <p>Click anywhere on the map to pin a location and see astrophotography conditions.</p>
+        <p>Search above or tap the map to pin a location and see astrophotography conditions.</p>
         <ul class="no-pin-features">
           <li>🌙 Moon phase &amp; rise/set times</li>
           <li>🌌 Galactic Center visibility window</li>

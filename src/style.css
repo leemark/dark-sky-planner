@@ -140,6 +140,8 @@ html, body {
   gap: 8px;
 }
 
+#btn-sidebar-toggle { display: none; }
+
 .btn-icon {
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -618,6 +620,12 @@ html, body {
   transform: scale(1.05);
 }
 
+.cal-day:active { opacity: 0.75; transform: scale(0.97); }
+
+.btn-icon, .btn-month, .date-nav-btn, .cal-day, #search-results li {
+  touch-action: manipulation;
+}
+
 .cal-day.active {
   border-color: var(--accent-gold);
 }
@@ -725,7 +733,34 @@ html, body {
     border-left: none;
     border-top: 1px solid var(--border-color);
     z-index: 500;
+    transition: height 0.25s ease;
   }
+
+  #sidebar.sidebar-collapsed {
+    height: var(--header-height);
+  }
+
+  #btn-sidebar-toggle { display: flex; }
+
+  /* Touch targets ≥ 44px */
+  .btn-icon { height: 44px; width: 44px; }
+  .btn-icon.btn-labeled { width: auto; }
+  .date-nav-btn { width: 44px; height: 44px; }
+  .btn-month { width: 44px; height: 44px; }
+  .btn-close { padding: 12px; }
+  #search-results li { padding: 12px 10px; }
+  .cal-day { min-height: 44px; }
+
+  /* Search dropdown — fits within sidebar */
+  #search-results { max-height: 180px; }
+
+  /* Hide desktop-only tip */
+  .no-pin-tip { display: none; }
+
+  /* Typography */
+  .panel-label  { font-size: 13px; }
+  .panel-value  { font-size: 14px; }
+  .panel-title  { font-size: 12px; }
 
   #lp-legend,
   #lp-controls {

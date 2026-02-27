@@ -208,6 +208,22 @@ export function renderTimeline() {
     svgEl.addEventListener('mouseleave', () => {
       tip.style.display = 'none';
     });
+
+    svgEl.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = svgEl.getBoundingClientRect();
+      const px = ((touch.clientX - rect.left) / rect.width) * SVG_W;
+      const hoveredTime = toTime(px);
+      tip.style.display = 'block';
+      tip.style.left = `${touch.clientX - rect.left}px`;
+      tip.style.top = `${BAND_Y - 28}px`;
+      tip.textContent = `${formatTime(hoveredTime, tz)} · ${getConditionsAt(hoveredTime, nd)}`;
+    }, { passive: false });
+
+    svgEl.addEventListener('touchend', () => {
+      tip.style.display = 'none';
+    });
   }
 }
 
