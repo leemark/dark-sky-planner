@@ -45,7 +45,7 @@ export function initMap() {
   // maxNativeZoom:6 = Leaflet scales z6 tiles for higher zoom levels (native data res ~2.4km/px)
   lpLayer = L.tileLayer('https://leemark.github.io/dark-sky-planner-tiles/{z}/{x}/{y}.png', {
     attribution: '&copy; Light Pollution Atlas 2024 (VIIRS/NASA)',
-    opacity: 0.2,
+    opacity: 0.15,
     maxZoom: 20,
     maxNativeZoom: 6,
     tms: true,
@@ -61,12 +61,10 @@ export function initMap() {
   };
   const overlays = { 'Light Pollution': lpLayer };
   L.control.layers(baseLayers, overlays, { collapsed: true }).addTo(mapInstance);
+  lpLayer.addTo(mapInstance);
 
-  // LP controls and legend: hidden until LP overlay is enabled
   const lpControls = document.getElementById('lp-controls');
   const lpLegend   = document.getElementById('lp-legend');
-  if (lpControls) lpControls.style.display = 'none';
-  if (lpLegend)   lpLegend.style.display   = 'none';
 
   mapInstance.on('overlayadd', (e) => {
     if (e.name === 'Light Pollution') {

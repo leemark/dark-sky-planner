@@ -234,18 +234,29 @@ function drawMoonStrip(parts, tStart, tEnd, moonrise, moonset, nextMoonrise, opa
   const y = BAND_Y + 2;
   const h = BAND_H - 4;
 
-  // Moon up from start if it rose before our window
-  if (moonset && (!moonrise || moonrise > moonset)) {
-    const endPx = Math.min(toPx(moonset), W);
-    if (endPx > 0) {
-      parts.push(`<rect x="0" y="${y}" width="${endPx}" height="${h}" fill="${color}"/>`);
+  // Build the interval(s) during [tStart, tEnd] when the moon is above the horizon.
+  const intervals = [];
+
+  const riseMs = moonrise?.getTime() ?? null;
+  const setMs  = moonset?.getTime()  ?? null;
+
+  // Moon was already up at the start of our window (rose before tStart, or no rise at all)
+  if (riseMs === null || riseMs < tStart) {
+    const end = setMs ?? tEnd;
+    if (end > tStart) {
+      intervals.push([tStart, Math.min(end, tEnd)]);
     }
   }
 
   // Moon rises during our window
-  if (moonrise && moonrise.getTime() >= tStart && moonrise.getTime() <= tEnd) {
-    const startPx = toPx(moonrise);
-    const endPx = moonset ? Math.min(toPx(moonset), W) : W;
+  if (riseMs !== null && riseMs >= tStart && riseMs <= tEnd) {
+    const end = (setMs !== null && setMs > riseMs) ? Math.min(setMs, tEnd) : tEnd;
+    intervals.push([riseMs, end]);
+  }
+
+  for (const [start, end] of intervals) {
+    const startPx = toPx(new Date(start));
+    const endPx   = toPx(new Date(end));
     if (endPx > startPx) {
       parts.push(`<rect x="${startPx}" y="${y}" width="${endPx - startPx}" height="${h}" fill="${color}"/>`);
     }
