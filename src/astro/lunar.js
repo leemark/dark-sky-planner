@@ -51,6 +51,7 @@ export function getLunarData(isoDate, lat, lng) {
     moonrise: moonTimes.rise || null,
     moonset: moonTimes.set || null,
     nextMoonrise: nextMoonTimes.rise || null,
+    nextMoonset: nextMoonTimes.set || null,
     isNoInterference,
     moonDownWindow: moonWindow,
   };

@@ -30,6 +30,18 @@ export function renderLunarPanel() {
   const l = nd.lunar;
   const illumPct = Math.round(l.fraction * 100);
 
+  // Show the moonrise/moonset relevant to tonight (sunset → next sunrise).
+  // SunCalc returns times for a calendar day (midnight–midnight), so a rise or set
+  // after midnight will appear in the *next* day's data instead.
+  const solar = nd.solar;
+  const nightStart = solar?.sunset?.getTime() ?? 0;
+  const nightEnd   = solar?.nextSunrise?.getTime() ?? 0;
+
+  function inNight(t) { return t && nightStart && nightEnd && t.getTime() >= nightStart && t.getTime() <= nightEnd; }
+
+  const tonightRise = inNight(l.moonrise) ? l.moonrise : inNight(l.nextMoonrise) ? l.nextMoonrise : null;
+  const tonightSet  = inNight(l.moonset)  ? l.moonset  : inNight(l.nextMoonset)  ? l.nextMoonset  : null;
+
   el.innerHTML = `
     <div class="panel">
       <div class="panel-title">Moon</div>
@@ -48,11 +60,11 @@ export function renderLunarPanel() {
       </div>
       <div class="panel-row">
         <span class="panel-label">Moonrise</span>
-        <span class="panel-value">${l.moonrise ? formatTime(l.moonrise, tz) : '—'}</span>
+        <span class="panel-value">${tonightRise ? formatTime(tonightRise, tz) : '—'}</span>
       </div>
       <div class="panel-row">
         <span class="panel-label">Moonset</span>
-        <span class="panel-value">${l.moonset ? formatTime(l.moonset, tz) : '—'}</span>
+        <span class="panel-value">${tonightSet ? formatTime(tonightSet, tz) : '—'}</span>
       </div>
     </div>
   `;

@@ -95,11 +95,10 @@ export function renderTimeline() {
 
   // Moon strip
   if (nd.lunar && !nd.lunar.isNoInterference) {
-    const { moonrise, moonset, nextMoonrise, fraction } = nd.lunar;
+    const { moonrise, moonset, nextMoonrise, nextMoonset, fraction } = nd.lunar;
     const moonOpacity = Math.max(0.15, fraction * 0.7);
 
-    // Draw moon strips for when moon is above horizon during our window
-    drawMoonStrip(svgParts, tStart, tEnd, moonrise, moonset, nextMoonrise, moonOpacity, toPx, SVG_W, BAND_Y, BAND_H);
+    drawMoonStrip(svgParts, tStart, tEnd, moonrise, moonset, nextMoonrise, nextMoonset, moonOpacity, toPx, SVG_W, BAND_Y, BAND_H);
   }
 
   // MW window strip (amber)
@@ -229,29 +228,50 @@ export function renderTimeline() {
   }
 }
 
-function drawMoonStrip(parts, tStart, tEnd, moonrise, moonset, nextMoonrise, opacity, toPx, W, BAND_Y, BAND_H) {
+function drawMoonStrip(parts, tStart, tEnd, moonrise, moonset, nextMoonrise, nextMoonset, opacity, toPx, W, BAND_Y, BAND_H) {
   const color = `rgba(212,197,160,${opacity})`;
   const y = BAND_Y + 2;
   const h = BAND_H - 4;
 
-  // Build the interval(s) during [tStart, tEnd] when the moon is above the horizon.
-  const intervals = [];
+  // Collect all rise/set events that fall within [tStart, tEnd], sorted by time.
+  // A "rise" event means the moon goes UP; a "set" event means it goes DOWN.
+  const events = [];
 
-  const riseMs = moonrise?.getTime() ?? null;
-  const setMs  = moonset?.getTime()  ?? null;
-
-  // Moon was already up at the start of our window (rose before tStart, or no rise at all)
-  if (riseMs === null || riseMs < tStart) {
-    const end = setMs ?? tEnd;
-    if (end > tStart) {
-      intervals.push([tStart, Math.min(end, tEnd)]);
+  function addIf(time, type) {
+    if (time) {
+      const ms = time.getTime();
+      if (ms >= tStart && ms <= tEnd) events.push({ ms, type });
     }
   }
 
-  // Moon rises during our window
-  if (riseMs !== null && riseMs >= tStart && riseMs <= tEnd) {
-    const end = (setMs !== null && setMs > riseMs) ? Math.min(setMs, tEnd) : tEnd;
-    intervals.push([riseMs, end]);
+  addIf(moonrise,      'rise');
+  addIf(moonset,       'set');
+  addIf(nextMoonrise,  'rise');
+  addIf(nextMoonset,   'set');
+
+  events.sort((a, b) => a.ms - b.ms);
+
+  // Determine if the moon is already up at tStart:
+  // It's up if the most recent event before tStart was a rise (or there's no
+  // preceding set). We can infer this: if the first event in our window is a
+  // "set", the moon must have been up at tStart.
+  let moonUp = events.length > 0 && events[0].type === 'set';
+
+  // Walk through the night, building moon-up intervals.
+  const intervals = [];
+  let upSince = moonUp ? tStart : null;
+
+  for (const ev of events) {
+    if (ev.type === 'rise' && upSince === null) {
+      upSince = ev.ms;
+    } else if (ev.type === 'set' && upSince !== null) {
+      intervals.push([upSince, ev.ms]);
+      upSince = null;
+    }
+  }
+  // If still up at the end of the window, close the interval
+  if (upSince !== null) {
+    intervals.push([upSince, tEnd]);
   }
 
   for (const [start, end] of intervals) {
@@ -281,6 +301,26 @@ function getHourTicks(tStart, tEnd, tz) {
   return ticks;
 }
 
+function isMoonUp(t, lunar) {
+  // Collect all rise/set events and sort them to determine moon state at time t.
+  const events = [];
+  if (lunar.moonrise)     events.push({ ms: lunar.moonrise.getTime(),     type: 'rise' });
+  if (lunar.moonset)      events.push({ ms: lunar.moonset.getTime(),      type: 'set' });
+  if (lunar.nextMoonrise) events.push({ ms: lunar.nextMoonrise.getTime(), type: 'rise' });
+  if (lunar.nextMoonset)  events.push({ ms: lunar.nextMoonset.getTime(),  type: 'set' });
+  events.sort((a, b) => a.ms - b.ms);
+
+  // Walk events up to time t; the last event before t tells us current state.
+  // Start by assuming the moon is up if the first event is a set.
+  let up = events.length > 0 && events[0].ms > t ? events[0].type === 'set'
+         : false;
+  for (const ev of events) {
+    if (ev.ms > t) break;
+    up = ev.type === 'rise';
+  }
+  return up;
+}
+
 function getConditionsAt(time, nd) {
   const parts = [];
   const t = time.getTime();
@@ -297,9 +337,7 @@ function getConditionsAt(time, nd) {
   }
 
   if (nd.lunar && !nd.lunar.isNoInterference) {
-    const { moonrise, moonset } = nd.lunar;
-    const moonUp = (moonrise && t >= moonrise.getTime() && (!moonset || t <= moonset.getTime()))
-                || (!moonrise && moonset && t <= moonset.getTime());
+    const moonUp = isMoonUp(t, nd.lunar);
     if (moonUp) parts.push(`Moon up (${Math.round(nd.lunar.fraction * 100)}%)`);
     else parts.push('Moon down');
   }
