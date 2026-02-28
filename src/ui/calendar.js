@@ -72,6 +72,19 @@ async function renderCalendarGrid() {
 
   title.textContent = `${MONTHS[calendarMonth]} ${calendarYear}`;
 
+  // No location — show prompt instead of scoring grid
+  if (!state.location) {
+    grid.innerHTML = `<div class="cal-no-location">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 13 6 13s6-8.5 6-13c0-3.314-2.686-6-6-6z"/>
+        <circle cx="12" cy="8" r="2"/>
+      </svg>
+      <p>No location selected</p>
+      <p class="cal-no-location-hint">Drop a pin on the map or search for a place — then the calendar will show night quality scores for each date.</p>
+    </div>`;
+    return;
+  }
+
   // Day headers
   const headerHtml = DAYS.map(d => `<div class="cal-day-header">${d}</div>`).join('');
 
@@ -113,9 +126,6 @@ async function renderCalendarGrid() {
     const isActive = cell.isoDate === state.date;
     return `<div class="cal-day computing ${isActive ? 'active' : ''}" data-date="${cell.isoDate}">${cell.day}</div>`;
   }).join('');
-
-  // No location — can't score
-  if (!state.location) return;
 
   // Compute scores for each day (can run quickly since all client-side)
   const { lat, lng } = state.location;
