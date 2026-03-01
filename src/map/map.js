@@ -48,7 +48,7 @@ export function initMap() {
   // maxNativeZoom:6 = Leaflet scales z6 tiles for higher zoom levels (native data res ~2.4km/px)
   lpLayer = L.tileLayer('https://leemark.github.io/dark-sky-planner-tiles/{z}/{x}/{y}.png', {
     attribution: '&copy; Light Pollution Atlas 2024 (VIIRS/NASA)',
-    opacity: 0.15,
+    opacity: 0.25,
     maxZoom: 20,
     maxNativeZoom: 6,
     tms: true,
