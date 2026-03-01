@@ -52,7 +52,13 @@ function updateLocationBar() {
     if (state.nightData) {
       const quality = scoreNight(state.nightData);
       const label = quality.charAt(0).toUpperCase() + quality.slice(1);
-      el.innerHTML = `${locText} <span class="quality-badge ${quality}">${label}</span>`;
+      // Build DOM safely — locText contains Nominatim data and must not be set via innerHTML
+      el.textContent = locText;
+      const badge = document.createElement('span');
+      badge.className = `quality-badge ${quality}`;
+      badge.textContent = label;
+      el.appendChild(document.createTextNode(' '));
+      el.appendChild(badge);
     } else {
       el.textContent = locText;
     }

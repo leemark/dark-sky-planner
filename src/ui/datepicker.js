@@ -12,10 +12,10 @@ export function initDatepicker(onDateChange) {
 
   container.innerHTML = `
     <div class="datepicker-wrap">
-      <button class="date-nav-btn" id="date-prev" title="Previous day">&#8592;</button>
+      <button class="date-nav-btn" id="date-prev" title="Previous day" aria-label="Previous day">&#8592;</button>
       <label for="date-input">Date</label>
       <input type="date" id="date-input" value="${state.date}" />
-      <button class="date-nav-btn" id="date-next" title="Next day">&#8594;</button>
+      <button class="date-nav-btn" id="date-next" title="Next day" aria-label="Next day">&#8594;</button>
     </div>
     <div class="datepicker-hint">&#8592; &#8594; arrow keys to change date</div>
   `;

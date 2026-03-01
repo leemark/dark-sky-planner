@@ -102,20 +102,55 @@ async function boot() {
 
   // Share button
   const btnShare = document.getElementById('btn-share');
+  const announcer = document.getElementById('status-announcer');
+
+  function showShareCopied() {
+    const label = btnShare.querySelector('.btn-label');
+    if (label) label.textContent = 'Copied!';
+    btnShare.style.color = '#39c5cf';
+    if (announcer) announcer.textContent = 'Link copied to clipboard.';
+    setTimeout(() => {
+      if (label) label.textContent = 'Share';
+      btnShare.style.color = '';
+      if (announcer) announcer.textContent = '';
+    }, 2000);
+  }
+
+  function showShareFallback(url) {
+    // Show the URL visibly in the announcer for manual copy; no prompt()
+    const label = btnShare.querySelector('.btn-label');
+    if (label) label.textContent = 'Copy URL';
+    if (announcer) announcer.textContent = `Copy this link: ${url}`;
+    setTimeout(() => {
+      if (label) label.textContent = 'Share';
+      if (announcer) announcer.textContent = '';
+    }, 5000);
+  }
+
+  function copyWithExecCommand(text) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) showShareCopied(); else showShareFallback(text);
+    } catch {
+      showShareFallback(text);
+    }
+  }
+
   btnShare?.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      const label = btnShare.querySelector('.btn-label');
-      if (label) label.textContent = 'Copied!';
-      btnShare.style.color = '#39c5cf';
-      setTimeout(() => {
-        if (label) label.textContent = 'Share';
-        btnShare.title = 'Copy Share Link';
-        btnShare.style.color = '';
-      }, 2000);
-    }).catch(() => {
-      // Fallback: select the URL
-      prompt('Copy this link:', window.location.href);
-    });
+    const shareUrl = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl)
+        .then(showShareCopied)
+        .catch(() => copyWithExecCommand(shareUrl));
+    } else {
+      copyWithExecCommand(shareUrl);
+    }
   });
 
   // Restore from URL params

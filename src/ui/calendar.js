@@ -10,6 +10,13 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 
 let calendarYear = null;
 let calendarMonth = null; // 0-indexed
+let calendarOpener = null; // element that triggered open, for focus restore
+
+function getFocusable(container) {
+  return Array.from(container.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  ));
+}
 
 /**
  * Initialize the calendar modal.
@@ -46,6 +53,27 @@ export function initCalendar() {
     renderCalendarGrid();
   });
 
+  // Focus trap: keep Tab/Shift-Tab inside the modal
+  modal.addEventListener('keydown', (e) => {
+    if (modal.classList.contains('hidden')) return;
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusable(modal);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
   // Keyboard: Escape to close
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
@@ -56,13 +84,23 @@ export function initCalendar() {
 
 function openCalendar() {
   const modal = document.getElementById('calendar-modal');
+  calendarOpener = document.activeElement;
   modal?.classList.remove('hidden');
+  document.body.classList.add('modal-open');
   renderCalendarGrid();
+  // Focus first focusable element after grid renders
+  requestAnimationFrame(() => {
+    const first = getFocusable(modal)[0];
+    first?.focus();
+  });
 }
 
 function closeCalendar() {
   const modal = document.getElementById('calendar-modal');
   modal?.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  calendarOpener?.focus();
+  calendarOpener = null;
 }
 
 async function renderCalendarGrid() {

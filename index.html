@@ -3,27 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dark Sky Planner</title>
+  <title>Dark Sky Planner — Milky Way &amp; Night Sky Planning</title>
+  <meta name="description" content="Plan Milky Way photography and night sky observation. Find optimal darkness windows, moon phase, and galactic center visibility for any location and date." />
+  <link rel="canonical" href="https://darkskyplanner.app/" />
+  <meta property="og:title" content="Dark Sky Planner — Milky Way &amp; Night Sky Planning" />
+  <meta property="og:description" content="Plan Milky Way photography and night sky observation. Find optimal darkness windows, moon phase, and galactic center visibility for any location and date." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://darkskyplanner.app/" />
+  <meta property="og:image" content="https://darkskyplanner.app/favicon.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Dark Sky Planner — Milky Way &amp; Night Sky Planning" />
+  <meta name="twitter:description" content="Plan Milky Way photography and night sky observation. Find optimal darkness windows, moon phase, and galactic center visibility for any location and date." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
   <div id="app">
-    <div id="map">
+    <main id="map">
       <div id="map-hint-overlay">
         <div id="map-hint-pill">&#128205; Tap or click the map to pin a location</div>
       </div>
-    </div>
-    <div id="sidebar">
-      <div id="sidebar-header">
+    </main>
+    <aside id="sidebar" aria-label="Planning sidebar">
+      <header id="sidebar-header">
         <h1 class="app-title">Dark Sky Planner</h1>
         <div id="header-actions">
-          <button id="btn-calendar" class="btn-icon btn-labeled" title="View Calendar"><span>&#128197;</span><span class="btn-label">Calendar</span></button>
-          <button id="btn-share" class="btn-icon btn-labeled" title="Copy Share Link"><span>&#128279;</span><span class="btn-label">Share</span></button>
-          <button id="btn-help" class="btn-icon btn-labeled" title="About &amp; Help"><span>?</span><span class="btn-label">Help</span></button>
+          <button id="btn-calendar" class="btn-icon btn-labeled" title="View Calendar" aria-label="View Calendar"><span>&#128197;</span><span class="btn-label">Calendar</span></button>
+          <button id="btn-share" class="btn-icon btn-labeled" title="Copy Share Link" aria-label="Share link"><span>&#128279;</span><span class="btn-label">Share</span></button>
+          <button id="btn-help" class="btn-icon btn-labeled" title="About &amp; Help" aria-label="Help"><span>?</span><span class="btn-label">Help</span></button>
         </div>
-        <button id="btn-sidebar-toggle" class="btn-icon" title="Hide panel" aria-label="Toggle panel">&#9660;</button>
-      </div>
+        <button id="btn-sidebar-toggle" class="btn-icon" title="Hide panel" aria-label="Toggle sidebar">&#9660;</button>
+      </header>
       <div id="search-container">
         <input
           id="search-input"
@@ -31,6 +41,7 @@
           placeholder="Search for a place…"
           autocomplete="off"
           spellcheck="false"
+          aria-label="Search for a location"
         />
         <ul id="search-results" class="hidden"></ul>
       </div>
@@ -49,18 +60,18 @@
       <div id="sidebar-footer">
         &copy; 2026 <a href="https://themarklee.com" target="_blank" rel="noopener">Mark Lee</a>
       </div>
-    </div>
+    </aside>
   </div>
 
   <!-- Calendar modal -->
-  <div id="calendar-modal" class="modal hidden">
+  <div id="calendar-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="calendar-title">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <button id="btn-prev-month" class="btn-month">&#8592;</button>
+        <button id="btn-prev-month" class="btn-month" aria-label="Previous month">&#8592;</button>
         <h2 id="calendar-title">Month Year</h2>
-        <button id="btn-next-month" class="btn-month">&#8594;</button>
-        <button id="btn-close-calendar" class="btn-close">&#10005;</button>
+        <button id="btn-next-month" class="btn-month" aria-label="Next month">&#8594;</button>
+        <button id="btn-close-calendar" class="btn-close" aria-label="Close calendar">&#10005;</button>
       </div>
       <div id="calendar-grid"></div>
       <div id="calendar-legend">
@@ -79,16 +90,16 @@
   <!-- Opacity slider -->
   <div id="lp-controls">
     <label for="lp-opacity">Light Pollution</label>
-    <input type="range" id="lp-opacity" min="0" max="80" value="25" />
+    <input type="range" id="lp-opacity" min="0" max="80" value="25" aria-label="Light pollution layer opacity" />
   </div>
 
   <!-- Help modal -->
-  <div id="help-modal" class="modal hidden">
+  <div id="help-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
     <div class="modal-backdrop"></div>
     <div class="modal-content help-modal-content">
       <div class="modal-header">
-        <h2>About &amp; Help</h2>
-        <button id="btn-help-close" class="btn-close">&#10005;</button>
+        <h2 id="help-title">About &amp; Help</h2>
+        <button id="btn-help-close" class="btn-close" aria-label="Close help">&#10005;</button>
       </div>
 
       <div class="help-section">
@@ -155,6 +166,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Screen-reader live region for announcements -->
+  <div id="status-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
   <script type="module" src="/src/main.js"></script>
 </body>
