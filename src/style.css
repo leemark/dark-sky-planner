@@ -906,6 +906,11 @@ html, body {
   margin-top: 4px;
 }
 
+/* OSM inverted dark layer */
+.tiles-osm-dark img {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 /* Leaflet dark overrides */
 .leaflet-control-zoom a {
   background: var(--bg-secondary) !important;
