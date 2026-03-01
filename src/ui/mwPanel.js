@@ -107,8 +107,8 @@ export function renderMWPanel() {
         <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Azimuth</span>
-        <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
+        <span class="panel-label" title="Compass direction of the Galactic Center at start and end of shooting window">Azimuth Sweep</span>
+        <span class="panel-value">${azimuthSweepText(mw, sw)}</span>
       </div>
       <div class="panel-row">
         <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Time</span>
@@ -129,4 +129,31 @@ function getReason(nd) {
 function azToCompass(az) {
   const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
   return dirs[Math.round(az / 22.5) % 16];
+}
+
+/**
+ * Return a human-readable azimuth sweep string across the shooting window.
+ * e.g. "165° → 195° (S)"
+ */
+function azimuthSweepText(mw, sw) {
+  if (!mw?.samples?.length || !sw) {
+    return mw?.peakAz != null ? `${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}` : '—';
+  }
+
+  const swStart = sw.start.getTime();
+  const swEnd = sw.end.getTime();
+  const windowSamples = mw.samples.filter(s => s.time.getTime() >= swStart && s.time.getTime() <= swEnd);
+
+  if (windowSamples.length === 0) {
+    return mw.peakAz != null ? `${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}` : '—';
+  }
+
+  const startAz = windowSamples[0].azimuth;
+  const endAz = windowSamples[windowSamples.length - 1].azimuth;
+
+  if (windowSamples.length === 1 || Math.abs(startAz - endAz) < 2) {
+    return `${startAz.toFixed(0)}° ${azToCompass(startAz)}`;
+  }
+
+  return `${startAz.toFixed(0)}° → ${endAz.toFixed(0)}° (${azToCompass(mw.peakAz)})`;
 }

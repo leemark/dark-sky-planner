@@ -14,6 +14,7 @@ import { initHelp } from './ui/help.js';
 import { initSearch } from './ui/search.js';
 import { renderLegend } from './ui/legend.js';
 import { encodeState, decodeState } from './utils/url.js';
+import { initGCArrow } from './map/gcArrow.js';
 import tzlookup from 'tz-lookup';
 
 // ============================================================
@@ -99,6 +100,7 @@ async function boot() {
 
   initPin(map, onPinPlaced);
   initSearch(map, onPinPlaced);
+  initGCArrow(map);
 
   // Share button
   const btnShare = document.getElementById('btn-share');
