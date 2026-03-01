@@ -33,10 +33,24 @@ function updateArrow(map) {
 
   const mw = nd.milkyway;
   const sw = nd.shootingWindow;
-  if (!sw || mw?.peakAz == null) return;
+  if (!sw || !mw?.samples?.length) return;
+
+  // Find peak within shooting window (consistent with panel display)
+  const swStart = sw.start.getTime();
+  const swEnd = sw.end.getTime();
+  let peakAz = mw.peakAz;
+  let bestAlt = -Infinity;
+  for (const s of mw.samples) {
+    const t = s.time.getTime();
+    if (t >= swStart && t <= swEnd && s.altitude > bestAlt) {
+      bestAlt = s.altitude;
+      peakAz = s.azimuth;
+    }
+  }
+  if (peakAz == null) return;
 
   const { lat, lng } = loc;
-  const endpoint = destinationPoint(lat, lng, mw.peakAz, 20);
+  const endpoint = destinationPoint(lat, lng, peakAz, 20);
 
   arrowLine = L.polyline([[lat, lng], endpoint], {
     color: '#39c5cf',
@@ -54,7 +68,7 @@ function updateArrow(map) {
     fillOpacity: 1,
   }).addTo(map);
 
-  arrowTip.bindTooltip(`GC direction: ${mw.peakAz.toFixed(0)}°`, {
+  arrowTip.bindTooltip(`GC direction: ${peakAz.toFixed(0)}°`, {
     direction: 'right',
     className: 'gc-arrow-tooltip',
   });

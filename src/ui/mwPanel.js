@@ -101,24 +101,27 @@ export function renderMWPanel() {
         <div class="mw-window-time">${formatTime(sw.start, tz)} – ${formatTime(sw.end, tz)}</div>
         <div class="mw-window-duration">${formatDuration(sw.durationMinutes)} of optimal darkness</div>
       </div>
-      ${mw && mw.peakAlt !== null ? `
+      ${mw && mw.peakAlt !== null ? (() => {
+        const swPeak = getWindowPeak(mw, sw);
+        return `
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Altitude</span>
-        <span class="panel-value">${mw.peakAlt.toFixed(1)}°</span>
+        <span class="panel-label" title="Highest altitude of the Galactic Center during the shooting window">Peak Altitude</span>
+        <span class="panel-value">${swPeak.alt.toFixed(1)}°</span>
       </div>
       <div class="panel-row">
         <span class="panel-label" title="Compass direction of the Galactic Center at start and end of shooting window">Azimuth Sweep</span>
         <span class="panel-value">${azimuthSweepText(mw, sw)}</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label" title="Compass direction of the Galactic Center at its highest point">Peak Azimuth</span>
-        <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
+        <span class="panel-label" title="Compass direction of the Galactic Center at its highest point during the shooting window">Peak Azimuth</span>
+        <span class="panel-value">${swPeak.az.toFixed(0)}° ${azToCompass(swPeak.az)}</span>
       </div>
       <div class="panel-row">
-        <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Time</span>
-        <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
+        <span class="panel-label" title="Time the Galactic Center reaches its highest point during the shooting window">Peak Time</span>
+        <span class="panel-value">${formatTime(swPeak.time, tz)}</span>
       </div>
-      ` : ''}
+      `;
+      })() : ''}
     </div>
   `;
 }
@@ -133,6 +136,26 @@ function getReason(nd) {
 function azToCompass(az) {
   const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
   return dirs[Math.round(az / 22.5) % 16];
+}
+
+/**
+ * Find the peak-altitude sample within the shooting window.
+ * Falls back to the overall peak if no samples match.
+ */
+function getWindowPeak(mw, sw) {
+  if (sw && mw?.samples?.length) {
+    const swStart = sw.start.getTime();
+    const swEnd = sw.end.getTime();
+    let best = null;
+    for (const s of mw.samples) {
+      const t = s.time.getTime();
+      if (t >= swStart && t <= swEnd && (!best || s.altitude > best.altitude)) {
+        best = s;
+      }
+    }
+    if (best) return { alt: best.altitude, az: best.azimuth, time: best.time };
+  }
+  return { alt: mw.peakAlt, az: mw.peakAz, time: mw.peakTime };
 }
 
 /**
