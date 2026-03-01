@@ -111,6 +111,10 @@ export function renderMWPanel() {
         <span class="panel-value">${azimuthSweepText(mw, sw)}</span>
       </div>
       <div class="panel-row">
+        <span class="panel-label" title="Compass direction of the Galactic Center at its highest point">Peak Azimuth</span>
+        <span class="panel-value">${mw.peakAz.toFixed(0)}° ${azToCompass(mw.peakAz)}</span>
+      </div>
+      <div class="panel-row">
         <span class="panel-label" title="Galactic Center — dense core of the Milky Way">Peak Time</span>
         <span class="panel-value">${formatTime(mw.peakTime, tz)}</span>
       </div>
